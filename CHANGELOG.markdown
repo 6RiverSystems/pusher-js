@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.0 (2016-11-22)
+
+[CHANGED] rename bind_all to bind_global
+[NEW] unbind_global to remove global bindings
+[CHANGED] unbind_all now removes global bindings as well as event specific
+[NEW] expose context to pusher level bindings
+
 ## 3.2.2 (2016-10-03)
 
 [FIXED] Fix unsubscribe behaviour while subscription is pending (thanks to @hot-leaf-juice).
