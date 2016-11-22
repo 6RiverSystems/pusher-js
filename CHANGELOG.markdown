@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0 (2016-11-22)
+## NEXT_VERSION [CONTAINS BREAKING CHANGES] (YYYY-MM-DD)
 
 [CHANGED] rename bind_all to bind_global
 [NEW] unbind_global to remove global bindings
