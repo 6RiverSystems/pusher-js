@@ -1,3 +1,4 @@
+import Pusher from "core/pusher";
 import AssistantToTheTransportManager from './assistant_to_the_transport_manager';
 import Transport from "./transport";
 import PingDelayOptions from "./ping_delay_options";
@@ -48,5 +49,6 @@ export default class TransportManager {
   /** Takes one life from the transport. */
   reportDeath() {
     this.livesLeft -= 1;
+    Pusher.log(`death reported, lives left: ${this.livesLeft}`);
   }
 }

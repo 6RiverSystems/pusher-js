@@ -2054,6 +2054,7 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var pusher_1 = __webpack_require__(1);
 	var factory_1 = __webpack_require__(35);
 	var TransportManager = (function () {
 	    function TransportManager(options) {
@@ -2071,6 +2072,7 @@ module.exports =
 	    };
 	    TransportManager.prototype.reportDeath = function () {
 	        this.livesLeft -= 1;
+	        pusher_1["default"].log("death reported, lives left: " + this.livesLeft);
 	    };
 	    return TransportManager;
 	}());
