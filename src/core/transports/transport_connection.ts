@@ -7,6 +7,7 @@ import Socket from '../socket';
 import Runtime from 'runtime';
 import Timeline from '../timeline/timeline';
 import TransportConnectionOptions from './transport_connection_options';
+import Pusher from "../pusher";
 
 /** Provides universal API for transport connections.
  *
@@ -86,6 +87,7 @@ export default class TransportConnection extends EventsDispatcher {
    * @returns {Boolean} false if transport is in invalid state
    */
   connect() : boolean {
+    Pusher.log('connect - transport - connection');
     if (this.socket || this.state !== "initialized") {
       return false;
     }

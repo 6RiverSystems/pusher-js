@@ -1,5 +1,6 @@
 import Strategy from "./strategy";
 import StrategyRunner from "./strategy_runner";
+import Pusher from "../pusher";
 
 /** Launches the substrategy and terminates on the first open connection.
  *
@@ -17,6 +18,7 @@ export default class FirstConnectedStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) : StrategyRunner {
+    Pusher.log('connect - strategy - first connected');
     var runner = this.strategy.connect(
       minPriority,
       function(error, handshake) {

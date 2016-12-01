@@ -2,6 +2,7 @@ import AssistantToTheTransportManager from './assistant_to_the_transport_manager
 import Transport from "./transport";
 import PingDelayOptions from "./ping_delay_options";
 import Factory from "../utils/factory";
+import Pusher from "../pusher";
 
 export interface TransportManagerOptions extends PingDelayOptions {
   lives?: number;
@@ -48,5 +49,6 @@ export default class TransportManager {
   /** Takes one life from the transport. */
   reportDeath() {
     this.livesLeft -= 1;
+    Pusher.log(`reportDeath - lives left: ${this.livesLeft}`);
   }
 }

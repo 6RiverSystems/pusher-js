@@ -4,6 +4,7 @@ import TransportManager from './transport_manager';
 import TransportConnection from './transport_connection';
 import Transport from './transport';
 import PingDelayOptions from './ping_delay_options';
+import Pusher from "../pusher";
 
 /** Creates transport connections monitored by a transport manager.
  *
@@ -57,9 +58,11 @@ export default class AssistantToTheTransportManager {
       connection.unbind("open", onOpen);
       connection.bind("closed", onClosed);
       openTimestamp = Util.now();
+      Pusher.log('assistant transport manager - onOpen - connection opened');
     };
     var onClosed = (closeEvent)=> {
       connection.unbind("closed", onClosed);
+      Pusher.log(`assistant transport manager - onClosed - connection closed - closeEvent: ${closeEvent}`);
 
       if (closeEvent.code === 1002 || closeEvent.code === 1003) {
         // we don't want to use transports not obeying the protocol
@@ -87,6 +90,8 @@ export default class AssistantToTheTransportManager {
    * @returns {Boolean} true when the transport is supported
    */
   isSupported(environment : string) : boolean {
-    return this.manager.isAlive() && this.transport.isSupported(environment);
+    const ret = this.manager.isAlive() && this.transport.isSupported(environment);
+    Pusher.log(`assistant transport manager - isSupported? ${ret} - environment ${environment}`);
+    return ret;
   }
 }

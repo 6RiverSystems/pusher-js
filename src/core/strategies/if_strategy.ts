@@ -1,5 +1,6 @@
 import Strategy from "./strategy";
 import StrategyRunner from "./strategy_runner";
+import Pusher from "../pusher";
 
 /** Proxies method calls to one of substrategies basing on the test function.
  *
@@ -24,6 +25,7 @@ export default class IfStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) : StrategyRunner {
+    Pusher.log('connect - strategy - if');
     var branch = this.test() ? this.trueBranch : this.falseBranch;
     return branch.connect(minPriority, callback);
   }

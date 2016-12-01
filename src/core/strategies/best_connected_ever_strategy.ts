@@ -1,6 +1,7 @@
 import * as Collections from '../utils/collections';
 import Util from '../util';
 import Strategy from './strategy';
+import Pusher from "../pusher";
 
 /** Launches all substrategies and emits prioritized connected transports.
  *
@@ -18,6 +19,7 @@ export default class BestConnectedEverStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) {
+    Pusher.log('connect - strategy - best ever');
     return connect(this.strategies, minPriority, function(i, runners) {
       return function(error, handshake) {
         runners[i].error = error;

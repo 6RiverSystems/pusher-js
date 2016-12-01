@@ -1,0 +1,22 @@
+ESC[34mdebugESC[39m: Bridge => Wfm: Attempt to send message when disconnected (queuing message): position, data: {"type":"move","value":"arrived"}
+death reported, lives left: Infinity
+Pusher : Connecting : {"transport":"ws","url":"ws://slanger.barrett.6river.tech:8080/app/Kuiputheesoonahp0tah?protocol=7&client=js&version=3.2.4&flash=false"}
+Pusher : Connecting : {"transport":"ws","url":"ws://slanger.barrett.6river.tech:8080/app/Kuiputheesoonahp0tah?protocol=7&client=js&version=3.2.4&flash=false"}
+Pusher : TimelineSender Error: received 0 from stats.pusher.com
+Pusher : Connecting : {"transport":"ws","url":"ws://slanger.barrett.6river.tech:8080/app/Kuiputheesoonahp0tah?protocol=7&client=js&version=3.2.4&flash=false"}
+Pusher : State changed : unavailable -> connected with new socket ID 5.246222
+ESC[34mdebugESC[39m: Bridge: Connected to Wfm
+ESC[34mdebugESC[39m: Bridge => Wfm: Sending message: position, data: {"type":"move","value":"arrived","memberType":"mfp_bot","memberId":"harry"}
+Pusher : Event sent : {"event":"client-position","data":{"type":"move","value":"arrived","memberType":"mfp_bot","memberId":"harry"},"channel":"presence-mfp_harry"}
+Pusher : Event sent : {"event":"pusher:subscribe","data":{"auth":"Kuiputheesoonahp0tah:d480161e75c438548af81a06f1db9f236dbbb9f28eaad1dced900a3e01d53fa7","channel_data":"{\"user_id\":\"mfp_bot_harry\"}",
+"channel":"presence-mfp_harry"}}
+Pusher : Event recd : {"event":"pusher_internal:subscription_succeeded","data":{"presence":{"count":1,"ids":["mfp_bot_harry"],"hash":{"mfp_bot_harry":null}}},"channel":"presence-mfp_harry"}
+ESC[34mdebugESC[39m: Bridge: Subscribed to Wfm channel.
+ESC[34mdebugESC[39m: Connection changed: wfm connected
+ESC[34mdebugESC[39m: Brain is up (all subsystems are running)
+Pusher : Event sent : {"event":"pusher:ping","data":{}}
+Pusher : TimelineSender Error: received 0 from stats.pusher.com
+Pusher : Event recd : {"event":"pusher:pong","data":{}}
+Pusher : Event sent : {"event":"pusher:ping","data":{}}
+
+I think we got reconnected and then the wfm sent the message before the channel was subscribed to

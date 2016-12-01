@@ -1,6 +1,7 @@
 import {OneOffTimer as Timer} from '../utils/timers';
 import Strategy from './strategy';
 import StrategyOptions from './strategy_options';
+import Pusher from "../pusher";
 
 /** Runs substrategy after specified delay.
  *
@@ -24,6 +25,7 @@ export default class DelayedStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) {
+    Pusher.log('connect - strategy - delayed');
     var strategy = this.strategy;
     var runner;
     var timer = new Timer(this.options.delay, function() {

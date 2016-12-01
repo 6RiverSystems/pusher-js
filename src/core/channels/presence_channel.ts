@@ -74,6 +74,7 @@ export default class PresenceChannel extends PrivateChannel {
 
   /** Resets the channel state, including members map. For internal use only. */
   disconnect() {
+    Pusher.log('presence channel - disconnect');
     this.members.reset();
     super.disconnect();
   }

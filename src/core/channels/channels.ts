@@ -54,6 +54,7 @@ export default class Channels {
 
   /** Proxies disconnection signal to all channels. */
   disconnect() {
+    Pusher.log('channels - disconnect');
     Collections.objectApply(this.channels, function(channel) {
       channel.disconnect();
     });

@@ -3,6 +3,7 @@ import Util from '../util';
 import {OneOffTimer as Timer} from '../utils/timers';
 import Strategy from "./strategy";
 import StrategyOptions from "./strategy_options";
+import Pusher from "../pusher";
 
 /** Loops through strategies with optional timeouts.
  *
@@ -35,6 +36,7 @@ export default class SequentialStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) {
+    Pusher.log('connect - strategy - sequential');
     var strategies = this.strategies;
     var current = 0;
     var timeout = this.timeout;

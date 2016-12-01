@@ -6,6 +6,7 @@ import StrategyOptions from "./strategy_options";
 import TransportStrategy from './transport_strategy';
 import Timeline from '../timeline/timeline';
 import * as Collections from '../utils/collections';
+import Pusher from "../pusher";
 
 /** Caches last successful transport and uses it for following attempts.
  *
@@ -33,6 +34,7 @@ export default class CachedStrategy implements Strategy {
   }
 
   connect(minPriority : number, callback : Function) {
+    Pusher.log('connect - strategy - cached');
     var encrypted = this.encrypted;
     var info = fetchTransportCache(encrypted);
 

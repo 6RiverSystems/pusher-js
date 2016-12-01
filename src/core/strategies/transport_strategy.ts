@@ -6,6 +6,7 @@ import Strategy from './strategy';
 import Transport from '../transports/transport';
 import StrategyOptions from './strategy_options';
 import Handshake from "../connection/handshake";
+import Pusher from "../pusher";
 
 /** Provides a strategy interface for transports.
  *
@@ -43,6 +44,7 @@ export default class TransportStrategy implements Strategy {
    * @return {Object} strategy runner
    */
   connect(minPriority : number, callback : Function) {
+    Pusher.log('connect - strategy - transport');
     if (!this.isSupported()) {
       return failAttempt(new Errors.UnsupportedStrategy(), callback);
     } else if (this.priority < minPriority) {

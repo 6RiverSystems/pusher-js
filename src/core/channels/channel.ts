@@ -51,6 +51,7 @@ export default class Channel extends EventsDispatcher {
 
   /** Signals disconnection to the channel. For internal use only. */
   disconnect() {
+    Pusher.log('channel - disconnect');
     this.subscribed = false;
   }
 

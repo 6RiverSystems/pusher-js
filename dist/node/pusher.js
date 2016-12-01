@@ -100,6 +100,7 @@ module.exports =
 	        }
 	        var getStrategy = function (options) {
 	            var config = Collections.extend({}, _this.config, options);
+	            Pusher.log("pusher - getStrategy - getting strategy for config " + JSON.stringify(config));
 	            return StrategyBuilder.build(runtime_1["default"].getDefaultStrategy(config), config);
 	        };
 	        this.connection = factory_1["default"].createConnectionManager(this.key, Collections.extend({ getStrategy: getStrategy,
@@ -109,6 +110,7 @@ module.exports =
 	            unavailableTimeout: this.config.unavailable_timeout
 	        }, this.config, { encrypted: this.isEncrypted() }));
 	        this.connection.bind('connected', function () {
+	            Pusher.log('pusher - connection - connected - subscribing all');
 	            _this.subscribeAll();
 	            if (_this.timelineSender) {
 	                _this.timelineSender.send(_this.connection.isEncrypted());
@@ -127,9 +129,11 @@ module.exports =
 	            }
 	        });
 	        this.connection.bind('connecting', function () {
+	            Pusher.log('pusher - connection - connecting - disconnecting');
 	            _this.channels.disconnect();
 	        });
 	        this.connection.bind('disconnected', function () {
+	            Pusher.log('pusher - connection - disconnected - disconnecting');
 	            _this.channels.disconnect();
 	        });
 	        this.connection.bind('error', function (err) {
@@ -162,6 +166,7 @@ module.exports =
 	        return this.channels.all();
 	    };
 	    Pusher.prototype.connect = function () {
+	        Pusher.log('pusher - connect');
 	        this.connection.connect();
 	        if (this.timelineSender) {
 	            if (!this.timelineSenderTimer) {
@@ -174,6 +179,7 @@ module.exports =
 	        }
 	    };
 	    Pusher.prototype.disconnect = function () {
+	        Pusher.log('pusher - disconnect');
 	        this.connection.disconnect();
 	        if (this.timelineSenderTimer) {
 	            this.timelineSenderTimer.ensureAborted();
@@ -235,7 +241,7 @@ module.exports =
 	    };
 	    Pusher.instances = [];
 	    Pusher.isReady = false;
-	    Pusher.logToConsole = false;
+	    Pusher.logToConsole = true;
 	    Pusher.Runtime = runtime_1["default"];
 	    Pusher.ScriptReceivers = runtime_1["default"].ScriptReceivers;
 	    Pusher.DependenciesReceivers = runtime_1["default"].DependenciesReceivers;
@@ -876,6 +882,7 @@ module.exports =
 	var dispatcher_1 = __webpack_require__(14);
 	var logger_1 = __webpack_require__(16);
 	var runtime_1 = __webpack_require__(2);
+	var pusher_1 = __webpack_require__(1);
 	var TransportConnection = (function (_super) {
 	    __extends(TransportConnection, _super);
 	    function TransportConnection(hooks, name, priority, key, options) {
@@ -899,6 +906,7 @@ module.exports =
 	    };
 	    TransportConnection.prototype.connect = function () {
 	        var _this = this;
+	        pusher_1["default"].log('connect - transport - connection');
 	        if (this.socket || this.state !== "initialized") {
 	            return false;
 	        }
@@ -2054,6 +2062,7 @@ module.exports =
 
 	"use strict";
 	var factory_1 = __webpack_require__(35);
+	var pusher_1 = __webpack_require__(1);
 	var TransportManager = (function () {
 	    function TransportManager(options) {
 	        this.options = options || {};
@@ -2070,6 +2079,7 @@ module.exports =
 	    };
 	    TransportManager.prototype.reportDeath = function () {
 	        this.livesLeft -= 1;
+	        pusher_1["default"].log("reportDeath - lives left: " + this.livesLeft);
 	    };
 	    return TransportManager;
 	}());
@@ -2131,6 +2141,7 @@ module.exports =
 	"use strict";
 	var util_1 = __webpack_require__(6);
 	var Collections = __webpack_require__(4);
+	var pusher_1 = __webpack_require__(1);
 	var AssistantToTheTransportManager = (function () {
 	    function AssistantToTheTransportManager(manager, transport, options) {
 	        this.manager = manager;
@@ -2150,9 +2161,11 @@ module.exports =
 	            connection.unbind("open", onOpen);
 	            connection.bind("closed", onClosed);
 	            openTimestamp = util_1["default"].now();
+	            pusher_1["default"].log('assistant transport manager - onOpen - connection opened');
 	        };
 	        var onClosed = function (closeEvent) {
 	            connection.unbind("closed", onClosed);
+	            pusher_1["default"].log("assistant transport manager - onClosed - connection closed - closeEvent: " + closeEvent);
 	            if (closeEvent.code === 1002 || closeEvent.code === 1003) {
 	                _this.manager.reportDeath();
 	            }
@@ -2168,7 +2181,9 @@ module.exports =
 	        return connection;
 	    };
 	    AssistantToTheTransportManager.prototype.isSupported = function (environment) {
-	        return this.manager.isAlive() && this.transport.isSupported(environment);
+	        var ret = this.manager.isAlive() && this.transport.isSupported(environment);
+	        pusher_1["default"].log("assistant transport manager - isSupported? " + ret + " - environment " + environment);
+	        return ret;
 	    };
 	    return AssistantToTheTransportManager;
 	}());
@@ -2520,6 +2535,7 @@ module.exports =
 	var private_channel_1 = __webpack_require__(43);
 	var logger_1 = __webpack_require__(16);
 	var members_1 = __webpack_require__(46);
+	var pusher_1 = __webpack_require__(1);
 	var PresenceChannel = (function (_super) {
 	    __extends(PresenceChannel, _super);
 	    function PresenceChannel(name, pusher) {
@@ -2571,6 +2587,7 @@ module.exports =
 	        }
 	    };
 	    PresenceChannel.prototype.disconnect = function () {
+	        pusher_1["default"].log('presence channel - disconnect');
 	        this.members.reset();
 	        _super.prototype.disconnect.call(this);
 	    };
@@ -2620,6 +2637,7 @@ module.exports =
 	var dispatcher_1 = __webpack_require__(14);
 	var Errors = __webpack_require__(45);
 	var logger_1 = __webpack_require__(16);
+	var pusher_1 = __webpack_require__(1);
 	var Channel = (function (_super) {
 	    __extends(Channel, _super);
 	    function Channel(name, pusher) {
@@ -2642,6 +2660,7 @@ module.exports =
 	        return this.pusher.send_event(event, data, this.name);
 	    };
 	    Channel.prototype.disconnect = function () {
+	        pusher_1["default"].log('channel - disconnect');
 	        this.subscribed = false;
 	    };
 	    Channel.prototype.handleEvent = function (event, data) {
@@ -2836,6 +2855,7 @@ module.exports =
 	var logger_1 = __webpack_require__(16);
 	var Collections = __webpack_require__(4);
 	var runtime_1 = __webpack_require__(2);
+	var pusher_1 = __webpack_require__(1);
 	var ConnectionManager = (function (_super) {
 	    __extends(ConnectionManager, _super);
 	    function ConnectionManager(key, options) {
@@ -2854,15 +2874,18 @@ module.exports =
 	        Network.bind("online", function () {
 	            _this.timeline.info({ netinfo: "online" });
 	            if (_this.state === "connecting" || _this.state === "unavailable") {
+	                pusher_1["default"].log('connection manager - network came online - retrying immediately');
 	                _this.retryIn(0);
 	            }
 	        });
 	        Network.bind("offline", function () {
 	            _this.timeline.info({ netinfo: "offline" });
 	            if (_this.connection) {
+	                pusher_1["default"].log('connection manager - network went offline - sending activity check');
 	                _this.sendActivityCheck();
 	            }
 	        });
+	        pusher_1["default"].log('connection manager - ctor - updating strategy');
 	        this.updateStrategy();
 	    }
 	    ConnectionManager.prototype.connect = function () {
@@ -2870,9 +2893,11 @@ module.exports =
 	            return;
 	        }
 	        if (!this.strategy.isSupported()) {
+	            pusher_1["default"].log('connection manager - connect - updating state to failed - strategy not supported');
 	            this.updateState("failed");
 	            return;
 	        }
+	        pusher_1["default"].log('connection manager - connect - updating state to connecting');
 	        this.updateState("connecting");
 	        this.startConnecting();
 	        this.setUnavailableTimer();
@@ -2898,6 +2923,7 @@ module.exports =
 	    ;
 	    ConnectionManager.prototype.disconnect = function () {
 	        this.disconnectInternally();
+	        pusher_1["default"].log('connection manager - disconnect - updating state to disconnected');
 	        this.updateState("disconnected");
 	    };
 	    ;
@@ -2972,6 +2998,7 @@ module.exports =
 	    ConnectionManager.prototype.setUnavailableTimer = function () {
 	        var _this = this;
 	        this.unavailableTimer = new timers_1.OneOffTimer(this.options.unavailableTimeout, function () {
+	            pusher_1["default"].log('connection manager - connect - updating state to failed - strategy not supported');
 	            _this.updateState("unavailable");
 	        });
 	    };
@@ -2988,6 +3015,7 @@ module.exports =
 	        this.connection.ping();
 	        this.activityTimer = new timers_1.OneOffTimer(this.options.pongTimeout, function () {
 	            _this.timeline.error({ pong_timed_out: _this.options.pongTimeout });
+	            pusher_1["default"].log('connection manager - activity timer - retrying immediately');
 	            _this.retryIn(0);
 	        });
 	    };
@@ -2997,6 +3025,7 @@ module.exports =
 	        this.stopActivityCheck();
 	        if (!this.connection.handlesActivityChecks()) {
 	            this.activityTimer = new timers_1.OneOffTimer(this.activityTimeout, function () {
+	                pusher_1["default"].log('connection manager - activity timer - sending activity check');
 	                _this.sendActivityCheck();
 	            });
 	        }
@@ -3012,6 +3041,7 @@ module.exports =
 	        var _this = this;
 	        return {
 	            message: function (message) {
+	                pusher_1["default"].log('connection manager - connection callback - message - resetting activity check');
 	                _this.resetActivityCheck();
 	                _this.emit('message', message);
 	            },
@@ -3019,14 +3049,18 @@ module.exports =
 	                _this.send_event('pusher:pong', {});
 	            },
 	            activity: function () {
+	                pusher_1["default"].log('connection manager - connection callback - activity - resetting activity check');
 	                _this.resetActivityCheck();
 	            },
 	            error: function (error) {
+	                pusher_1["default"].log('connection manager - connection callback - error');
 	                _this.emit("error", { type: "WebSocketError", error: error });
 	            },
 	            closed: function () {
+	                pusher_1["default"].log('connection manager - connection callback - closed');
 	                _this.abandonConnection();
 	                if (_this.shouldRetry()) {
+	                    pusher_1["default"].log('connection manager - connection callback - closed - retrying in 1 second');
 	                    _this.retryIn(1000);
 	                }
 	            }
@@ -3041,6 +3075,7 @@ module.exports =
 	                _this.clearUnavailableTimer();
 	                _this.setConnection(handshake.connection);
 	                _this.socket_id = _this.connection.id;
+	                pusher_1["default"].log('connection manager - handshake callback - updating state to connected');
 	                _this.updateState("connected", { socket_id: _this.socket_id });
 	            }
 	        });
@@ -3059,16 +3094,21 @@ module.exports =
 	        return {
 	            ssl_only: withErrorEmitted(function () {
 	                _this.encrypted = true;
+	                pusher_1["default"].log('connection manager - error callback - ssl only - updating strategy');
 	                _this.updateStrategy();
+	                pusher_1["default"].log('connection manager - error callback - ssl only - retrying immediately');
 	                _this.retryIn(0);
 	            }),
 	            refused: withErrorEmitted(function () {
+	                pusher_1["default"].log('connection manager - error callback - refused - disconnecting');
 	                _this.disconnect();
 	            }),
 	            backoff: withErrorEmitted(function () {
+	                pusher_1["default"].log('connection manager - error callback - backoff - retrying in 1 second');
 	                _this.retryIn(1000);
 	            }),
 	            retry: withErrorEmitted(function () {
+	                pusher_1["default"].log('connection manager - error callback - retry - retrying immediately');
 	                _this.retryIn(0);
 	            })
 	        };
@@ -3083,6 +3123,7 @@ module.exports =
 	    };
 	    ;
 	    ConnectionManager.prototype.abandonConnection = function () {
+	        pusher_1["default"].log('connection manager - abandoning connection');
 	        if (!this.connection) {
 	            return;
 	        }
@@ -3124,6 +3165,7 @@ module.exports =
 	"use strict";
 	var Collections = __webpack_require__(4);
 	var factory_1 = __webpack_require__(35);
+	var pusher_1 = __webpack_require__(1);
 	var Channels = (function () {
 	    function Channels() {
 	        this.channels = {};
@@ -3146,6 +3188,7 @@ module.exports =
 	        return channel;
 	    };
 	    Channels.prototype.disconnect = function () {
+	        pusher_1["default"].log('channels - disconnect');
 	        Collections.objectApply(this.channels, function (channel) {
 	            channel.disconnect();
 	        });
@@ -3176,6 +3219,7 @@ module.exports =
 	var util_1 = __webpack_require__(6);
 	var Errors = __webpack_require__(45);
 	var Collections = __webpack_require__(4);
+	var pusher_1 = __webpack_require__(1);
 	var TransportStrategy = (function () {
 	    function TransportStrategy(name, priority, transport, options) {
 	        this.name = name;
@@ -3190,6 +3234,7 @@ module.exports =
 	    };
 	    TransportStrategy.prototype.connect = function (minPriority, callback) {
 	        var _this = this;
+	        pusher_1["default"].log('connect - strategy - transport');
 	        if (!this.isSupported()) {
 	            return failAttempt(new Errors.UnsupportedStrategy(), callback);
 	        }
@@ -3282,6 +3327,7 @@ module.exports =
 	var Collections = __webpack_require__(4);
 	var util_1 = __webpack_require__(6);
 	var timers_1 = __webpack_require__(7);
+	var pusher_1 = __webpack_require__(1);
 	var SequentialStrategy = (function () {
 	    function SequentialStrategy(strategies, options) {
 	        this.strategies = strategies;
@@ -3295,6 +3341,7 @@ module.exports =
 	    };
 	    SequentialStrategy.prototype.connect = function (minPriority, callback) {
 	        var _this = this;
+	        pusher_1["default"].log('connect - strategy - sequential');
 	        var strategies = this.strategies;
 	        var current = 0;
 	        var timeout = this.timeout;
@@ -3378,6 +3425,7 @@ module.exports =
 	"use strict";
 	var Collections = __webpack_require__(4);
 	var util_1 = __webpack_require__(6);
+	var pusher_1 = __webpack_require__(1);
 	var BestConnectedEverStrategy = (function () {
 	    function BestConnectedEverStrategy(strategies) {
 	        this.strategies = strategies;
@@ -3386,6 +3434,7 @@ module.exports =
 	        return Collections.any(this.strategies, util_1["default"].method("isSupported"));
 	    };
 	    BestConnectedEverStrategy.prototype.connect = function (minPriority, callback) {
+	        pusher_1["default"].log('connect - strategy - best ever');
 	        return connect(this.strategies, minPriority, function (i, runners) {
 	            return function (error, handshake) {
 	                runners[i].error = error;
@@ -3443,6 +3492,7 @@ module.exports =
 	var runtime_1 = __webpack_require__(2);
 	var sequential_strategy_1 = __webpack_require__(50);
 	var Collections = __webpack_require__(4);
+	var pusher_1 = __webpack_require__(1);
 	var CachedStrategy = (function () {
 	    function CachedStrategy(strategy, transports, options) {
 	        this.strategy = strategy;
@@ -3455,6 +3505,7 @@ module.exports =
 	        return this.strategy.isSupported();
 	    };
 	    CachedStrategy.prototype.connect = function (minPriority, callback) {
+	        pusher_1["default"].log('connect - strategy - cached');
 	        var encrypted = this.encrypted;
 	        var info = fetchTransportCache(encrypted);
 	        var strategies = [this.strategy];
@@ -3555,6 +3606,7 @@ module.exports =
 
 	"use strict";
 	var timers_1 = __webpack_require__(7);
+	var pusher_1 = __webpack_require__(1);
 	var DelayedStrategy = (function () {
 	    function DelayedStrategy(strategy, _a) {
 	        var number = _a.delay;
@@ -3565,6 +3617,7 @@ module.exports =
 	        return this.strategy.isSupported();
 	    };
 	    DelayedStrategy.prototype.connect = function (minPriority, callback) {
+	        pusher_1["default"].log('connect - strategy - delayed');
 	        var strategy = this.strategy;
 	        var runner;
 	        var timer = new timers_1.OneOffTimer(this.options.delay, function () {
@@ -3593,9 +3646,10 @@ module.exports =
 
 /***/ },
 /* 54 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var pusher_1 = __webpack_require__(1);
 	var IfStrategy = (function () {
 	    function IfStrategy(test, trueBranch, falseBranch) {
 	        this.test = test;
@@ -3607,6 +3661,7 @@ module.exports =
 	        return branch.isSupported();
 	    };
 	    IfStrategy.prototype.connect = function (minPriority, callback) {
+	        pusher_1["default"].log('connect - strategy - if');
 	        var branch = this.test() ? this.trueBranch : this.falseBranch;
 	        return branch.connect(minPriority, callback);
 	    };
@@ -3618,9 +3673,10 @@ module.exports =
 
 /***/ },
 /* 55 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var pusher_1 = __webpack_require__(1);
 	var FirstConnectedStrategy = (function () {
 	    function FirstConnectedStrategy(strategy) {
 	        this.strategy = strategy;
@@ -3629,6 +3685,7 @@ module.exports =
 	        return this.strategy.isSupported();
 	    };
 	    FirstConnectedStrategy.prototype.connect = function (minPriority, callback) {
+	        pusher_1["default"].log('connect - strategy - first connected');
 	        var runner = this.strategy.connect(minPriority, function (error, handshake) {
 	            if (handshake) {
 	                runner.abort();

@@ -23,7 +23,7 @@ export default class Pusher {
   /*  STATIC PROPERTIES */
   static instances : Pusher[]  = [];
   static isReady : boolean = false;
-  static logToConsole : boolean = false;
+  static logToConsole : boolean = true;
 
   // for jsonp
   static Runtime : AbstractRuntime = Runtime;
@@ -96,6 +96,7 @@ export default class Pusher {
 
     var getStrategy = (options)=> {
       var config = Collections.extend({}, this.config, options);
+      Pusher.log(`pusher - getStrategy - getting strategy for config ${JSON.stringify(config)}`);
       return StrategyBuilder.build(
         Runtime.getDefaultStrategy(config), config
       );
@@ -116,6 +117,7 @@ export default class Pusher {
     );
 
     this.connection.bind('connected', ()=> {
+      Pusher.log('pusher - connection - connected - subscribing all');
       this.subscribeAll();
       if (this.timelineSender) {
         this.timelineSender.send(this.connection.isEncrypted());
@@ -135,9 +137,11 @@ export default class Pusher {
       }
     });
     this.connection.bind('connecting', ()=> {
+      Pusher.log('pusher - connection - connecting - disconnecting');
       this.channels.disconnect();
     });
     this.connection.bind('disconnected', ()=> {
+      Pusher.log('pusher - connection - disconnected - disconnecting');
       this.channels.disconnect();
     });
     this.connection.bind('error', (err)=> {
@@ -161,6 +165,7 @@ export default class Pusher {
   }
 
   connect() {
+    Pusher.log('pusher - connect');
     this.connection.connect();
 
     if (this.timelineSender) {
@@ -175,6 +180,7 @@ export default class Pusher {
   }
 
   disconnect() {
+    Pusher.log('pusher - disconnect');
     this.connection.disconnect();
 
     if (this.timelineSenderTimer) {
