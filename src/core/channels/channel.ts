@@ -36,6 +36,7 @@ export default class Channel extends EventsDispatcher {
    * @param {Function} callback
    */
   authorize(socketId : string, callback : Function) {
+    Pusher.log('channel - authorize');
     return callback(false, {});
   }
 
@@ -53,6 +54,7 @@ export default class Channel extends EventsDispatcher {
   disconnect() {
     Pusher.log('channel - disconnect');
     this.subscribed = false;
+    this.subscriptionPending = false;
   }
 
   /** Handles an event. For internal use only.
@@ -61,6 +63,7 @@ export default class Channel extends EventsDispatcher {
    * @param {*} data
    */
   handleEvent(event : string, data : any) {
+    Pusher.log(`channel - handle event - ${event} - ${JSON.stringify(data)}`);
     if (event.indexOf("pusher_internal:") === 0) {
       if (event === "pusher_internal:subscription_succeeded") {
         this.subscriptionPending = false;
@@ -78,7 +81,11 @@ export default class Channel extends EventsDispatcher {
 
   /** Sends a subscription request. For internal use only. */
   subscribe() {
-    if (this.subscribed) { return; }
+    if (this.subscribed) {
+      Pusher.log('channel - subscribe - channel is already subscribed, returning');
+      return;
+    }
+    Pusher.log('channel - subscribing');
     this.subscriptionPending = true;
     this.subscriptionCancelled = false;
     this.authorize(this.pusher.connection.socket_id, (error, data)=> {
@@ -96,6 +103,7 @@ export default class Channel extends EventsDispatcher {
 
   /** Sends an unsubscription request. For internal use only. */
   unsubscribe() {
+    Pusher.log('channel - unsubscribe');
     this.subscribed = false;
     this.pusher.send_event('pusher:unsubscribe', {
       channel: this.name
@@ -104,11 +112,13 @@ export default class Channel extends EventsDispatcher {
 
   /** Cancels an in progress subscription. For internal use only. */
   cancelSubscription() {
+    Pusher.log('channel - cancel subscription');
     this.subscriptionCancelled = true;
   }
 
   /** Reinstates an in progress subscripiton. For internal use only. */
   reinstateSubscription() {
+    Pusher.log('channel - reinstantiate subscription');
     this.subscriptionCancelled = false;
   }
 }

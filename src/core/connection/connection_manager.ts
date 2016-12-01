@@ -212,7 +212,7 @@ export default class ConnectionManager extends EventsDispatcher {
     this.unavailableTimer = new Timer(
       this.options.unavailableTimeout,
       ()=> {
-        Pusher.log('connection manager - connect - updating state to failed - strategy not supported');
+        Pusher.log('connection manager - connect - updating state to unavailable - strategy not supported');
         this.updateState("unavailable");
       }
     );

@@ -199,6 +199,7 @@ module.exports =
 	        return this;
 	    };
 	    Pusher.prototype.subscribeAll = function () {
+	        Pusher.log('pusher - subscribe all');
 	        var channelName;
 	        for (channelName in this.channels.channels) {
 	            if (this.channels.channels.hasOwnProperty(channelName)) {
@@ -207,23 +208,30 @@ module.exports =
 	        }
 	    };
 	    Pusher.prototype.subscribe = function (channel_name) {
+	        Pusher.log("pusher - subscribe - channel name " + channel_name);
 	        var channel = this.channels.add(channel_name, this);
 	        if (channel.subscriptionPending && channel.subscriptionCancelled) {
+	            Pusher.log('pusher - subscribe - reinstantiating channel subscription');
 	            channel.reinstateSubscription();
 	        }
 	        else if (!channel.subscriptionPending && this.connection.state === "connected") {
+	            Pusher.log('pusher - subscribe - subscribing channel');
 	            channel.subscribe();
 	        }
 	        return channel;
 	    };
 	    Pusher.prototype.unsubscribe = function (channel_name) {
 	        var channel = this.channels.find(channel_name);
+	        Pusher.log("pusher - unsubscribe - channel " + channel_name + " " + channel);
 	        if (channel && channel.subscriptionPending) {
+	            Pusher.log('pusher - unsubscribe - cancelling channel subscription');
 	            channel.cancelSubscription();
 	        }
 	        else {
+	            Pusher.log('pusher - unsubscribe - removing channel');
 	            channel = this.channels.remove(channel_name);
 	            if (channel && this.connection.state === "connected") {
+	                Pusher.log('pusher - unsubscribe - unsubscribing channel');
 	                channel.unsubscribe();
 	            }
 	        }
@@ -2560,6 +2568,7 @@ module.exports =
 	        });
 	    };
 	    PresenceChannel.prototype.handleEvent = function (event, data) {
+	        pusher_1["default"].log("channel - handle event - " + event + " - " + JSON.stringify(data));
 	        switch (event) {
 	            case "pusher_internal:subscription_succeeded":
 	                this.subscriptionPending = false;
@@ -2651,6 +2660,7 @@ module.exports =
 	        this.subscriptionCancelled = false;
 	    }
 	    Channel.prototype.authorize = function (socketId, callback) {
+	        pusher_1["default"].log('channel - authorize');
 	        return callback(false, {});
 	    };
 	    Channel.prototype.trigger = function (event, data) {
@@ -2662,8 +2672,10 @@ module.exports =
 	    Channel.prototype.disconnect = function () {
 	        pusher_1["default"].log('channel - disconnect');
 	        this.subscribed = false;
+	        this.subscriptionPending = false;
 	    };
 	    Channel.prototype.handleEvent = function (event, data) {
+	        pusher_1["default"].log("channel - handle event - " + event + " - " + JSON.stringify(data));
 	        if (event.indexOf("pusher_internal:") === 0) {
 	            if (event === "pusher_internal:subscription_succeeded") {
 	                this.subscriptionPending = false;
@@ -2683,8 +2695,10 @@ module.exports =
 	    Channel.prototype.subscribe = function () {
 	        var _this = this;
 	        if (this.subscribed) {
+	            pusher_1["default"].log('channel - subscribe - channel is already subscribed, returning');
 	            return;
 	        }
+	        pusher_1["default"].log('channel - subscribing');
 	        this.subscriptionPending = true;
 	        this.subscriptionCancelled = false;
 	        this.authorize(this.pusher.connection.socket_id, function (error, data) {
@@ -2701,15 +2715,18 @@ module.exports =
 	        });
 	    };
 	    Channel.prototype.unsubscribe = function () {
+	        pusher_1["default"].log('channel - unsubscribe');
 	        this.subscribed = false;
 	        this.pusher.send_event('pusher:unsubscribe', {
 	            channel: this.name
 	        });
 	    };
 	    Channel.prototype.cancelSubscription = function () {
+	        pusher_1["default"].log('channel - cancel subscription');
 	        this.subscriptionCancelled = true;
 	    };
 	    Channel.prototype.reinstateSubscription = function () {
+	        pusher_1["default"].log('channel - reinstantiate subscription');
 	        this.subscriptionCancelled = false;
 	    };
 	    return Channel;
@@ -2998,7 +3015,7 @@ module.exports =
 	    ConnectionManager.prototype.setUnavailableTimer = function () {
 	        var _this = this;
 	        this.unavailableTimer = new timers_1.OneOffTimer(this.options.unavailableTimeout, function () {
-	            pusher_1["default"].log('connection manager - connect - updating state to failed - strategy not supported');
+	            pusher_1["default"].log('connection manager - connect - updating state to unavailable - strategy not supported');
 	            _this.updateState("unavailable");
 	        });
 	    };

@@ -46,6 +46,7 @@ export default class PresenceChannel extends PrivateChannel {
    * @param {*} data
    */
   handleEvent(event : string, data : any) {
+    Pusher.log(`channel - handle event - ${event} - ${JSON.stringify(data)}`);
     switch (event) {
       case "pusher_internal:subscription_succeeded":
         this.subscriptionPending = false;

@@ -205,6 +205,7 @@ export default class Pusher {
   }
 
   subscribeAll() {
+    Pusher.log('pusher - subscribe all');
     var channelName;
     for (channelName in this.channels.channels) {
       if (this.channels.channels.hasOwnProperty(channelName)) {
@@ -214,10 +215,13 @@ export default class Pusher {
   }
 
   subscribe(channel_name : string) {
+    Pusher.log(`pusher - subscribe - channel name ${channel_name}`);
     var channel = this.channels.add(channel_name, this);
     if (channel.subscriptionPending && channel.subscriptionCancelled) {
+      Pusher.log('pusher - subscribe - reinstantiating channel subscription');
       channel.reinstateSubscription();
     } else if (!channel.subscriptionPending && this.connection.state === "connected") {
+      Pusher.log('pusher - subscribe - subscribing channel');
       channel.subscribe();
     }
     return channel;
@@ -225,11 +229,15 @@ export default class Pusher {
 
   unsubscribe(channel_name : string) {
     var channel = this.channels.find(channel_name);
+    Pusher.log(`pusher - unsubscribe - channel ${channel_name} ${channel}`);
     if (channel && channel.subscriptionPending) {
+      Pusher.log('pusher - unsubscribe - cancelling channel subscription');
       channel.cancelSubscription();
     } else {
+      Pusher.log('pusher - unsubscribe - removing channel');
       channel = this.channels.remove(channel_name);
       if (channel && this.connection.state === "connected") {
+        Pusher.log('pusher - unsubscribe - unsubscribing channel');
         channel.unsubscribe();
       }
     }
