@@ -91,7 +91,7 @@ export default class AssistantToTheTransportManager {
    */
   isSupported(environment : string) : boolean {
     const ret = this.manager.isAlive() && this.transport.isSupported(environment);
-    Pusher.log(`assistant transport manager - isSupported? ${ret} - environment ${environment}`);
+    Pusher.log(`assistant transport manager - isSupported? ${ret} - environment ${JSON.stringify(environment)}`);
     return ret;
   }
 }

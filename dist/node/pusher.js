@@ -2190,7 +2190,7 @@ module.exports =
 	    };
 	    AssistantToTheTransportManager.prototype.isSupported = function (environment) {
 	        var ret = this.manager.isAlive() && this.transport.isSupported(environment);
-	        pusher_1["default"].log("assistant transport manager - isSupported? " + ret + " - environment " + environment);
+	        pusher_1["default"].log("assistant transport manager - isSupported? " + ret + " - environment " + JSON.stringify(environment));
 	        return ret;
 	    };
 	    return AssistantToTheTransportManager;
