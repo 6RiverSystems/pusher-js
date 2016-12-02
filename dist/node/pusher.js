@@ -2178,8 +2178,10 @@ module.exports =
 	                _this.manager.reportDeath();
 	            }
 	            else if (!closeEvent.wasClean && openTimestamp) {
+	                pusher_1["default"].log('assistant transport manager - onClosed - maybe reporting death for short-living transport');
 	                var lifespan = util_1["default"].now() - openTimestamp;
 	                if (lifespan < 2 * _this.maxPingDelay) {
+	                    pusher_1["default"].log('assistant transport manager - onClosed - definitely reporting death for short-living transport');
 	                    _this.manager.reportDeath();
 	                    _this.pingDelay = Math.max(lifespan / 2, _this.minPingDelay);
 	                }

@@ -68,9 +68,11 @@ export default class AssistantToTheTransportManager {
         // we don't want to use transports not obeying the protocol
         this.manager.reportDeath();
       } else if (!closeEvent.wasClean && openTimestamp) {
+        Pusher.log('assistant transport manager - onClosed - maybe reporting death for short-living transport');
         // report deaths only for short-living transport
         var lifespan = Util.now() - openTimestamp;
         if (lifespan < 2 * this.maxPingDelay) {
+          Pusher.log('assistant transport manager - onClosed - definitely reporting death for short-living transport');
           this.manager.reportDeath();
           this.pingDelay = Math.max(lifespan / 2, this.minPingDelay);
         }
