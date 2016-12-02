@@ -2173,7 +2173,7 @@ module.exports =
 	        };
 	        var onClosed = function (closeEvent) {
 	            connection.unbind("closed", onClosed);
-	            pusher_1["default"].log("assistant transport manager - onClosed - connection closed - closeEvent: " + closeEvent);
+	            pusher_1["default"].log("assistant transport manager - onClosed - connection closed - closeEvent: " + JSON.stringify(closeEvent));
 	            if (closeEvent.code === 1002 || closeEvent.code === 1003) {
 	                _this.manager.reportDeath();
 	            }

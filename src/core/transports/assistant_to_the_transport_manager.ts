@@ -62,7 +62,7 @@ export default class AssistantToTheTransportManager {
     };
     var onClosed = (closeEvent)=> {
       connection.unbind("closed", onClosed);
-      Pusher.log(`assistant transport manager - onClosed - connection closed - closeEvent: ${closeEvent}`);
+      Pusher.log(`assistant transport manager - onClosed - connection closed - closeEvent: ${JSON.stringify(closeEvent)}`);
 
       if (closeEvent.code === 1002 || closeEvent.code === 1003) {
         // we don't want to use transports not obeying the protocol
