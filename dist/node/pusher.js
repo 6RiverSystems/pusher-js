@@ -2672,7 +2672,6 @@ module.exports =
 	    Channel.prototype.disconnect = function () {
 	        pusher_1["default"].log('channel - disconnect');
 	        this.subscribed = false;
-	        this.subscriptionPending = false;
 	    };
 	    Channel.prototype.handleEvent = function (event, data) {
 	        pusher_1["default"].log("channel - handle event - " + event + " - " + JSON.stringify(data));
