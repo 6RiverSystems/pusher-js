@@ -54,7 +54,6 @@ export default class Channel extends EventsDispatcher {
   disconnect() {
     Pusher.log('channel - disconnect');
     this.subscribed = false;
-    this.subscriptionPending = false;
   }
 
   /** Handles an event. For internal use only.
