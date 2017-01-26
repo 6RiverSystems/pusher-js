@@ -90,28 +90,16 @@ export var processHandshake = function(message : Message) : Action {
  * @return {String} close action name
  */
 export var getCloseAction = function(closeEvent) : string {
-  if (closeEvent.code < 4000) {
-    // ignore 1000 CLOSE_NORMAL, 1001 CLOSE_GOING_AWAY,
-    //        1005 CLOSE_NO_STATUS, 1006 CLOSE_ABNORMAL
-    // ignore 1007...3999
-    // handle 1002 CLOSE_PROTOCOL_ERROR, 1003 CLOSE_UNSUPPORTED,
-    //        1004 CLOSE_TOO_LARGE
-    if (closeEvent.code >= 1002 && closeEvent.code <= 1004) {
-      return "backoff";
-    } else {
-      return null;
-    }
-  } else if (closeEvent.code === 4000) {
+  // Pusher-defined ws closeEvent codes are > 4000, see the links in the jsdoc
+  if (closeEvent.code === 4000) {
+    // retry connection with wss://
     return "ssl_only";
-  } else if (closeEvent.code < 4100) {
-    return "refused";
-  } else if (closeEvent.code < 4200) {
-    return "backoff";
-  } else if (closeEvent.code < 4300) {
+  } else if (closeEvent.code >= 4200 && closeEvent.code < 4300) {
+    // connection closed by Pusher, client may reconnect immediately
     return "retry";
   } else {
-    // unknown error
-    return "refused";
+    // default to retry with backoff
+    return "backoff";
   }
 };
 
