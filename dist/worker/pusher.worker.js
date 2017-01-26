@@ -2288,28 +2288,14 @@ var Pusher =
 	    }
 	};
 	exports.getCloseAction = function (closeEvent) {
-	    if (closeEvent.code < 4000) {
-	        if (closeEvent.code >= 1002 && closeEvent.code <= 1004) {
-	            return "backoff";
-	        }
-	        else {
-	            return null;
-	        }
-	    }
-	    else if (closeEvent.code === 4000) {
+	    if (closeEvent.code === 4000) {
 	        return "ssl_only";
 	    }
-	    else if (closeEvent.code < 4100) {
-	        return "refused";
-	    }
-	    else if (closeEvent.code < 4200) {
-	        return "backoff";
-	    }
-	    else if (closeEvent.code < 4300) {
+	    else if (closeEvent.code >= 4200 && closeEvent.code < 4300) {
 	        return "retry";
 	    }
 	    else {
-	        return "refused";
+	        return "backoff";
 	    }
 	};
 	exports.getCloseError = function (closeEvent) {
