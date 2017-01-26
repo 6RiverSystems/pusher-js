@@ -91,12 +91,11 @@ export var processHandshake = function(message : Message) : Action {
  */
 export var getCloseAction = function(closeEvent) : string {
   if (closeEvent.code < 4000) {
-    // ignore 1000 CLOSE_NORMAL, 1001 CLOSE_GOING_AWAY,
-    //        1005 CLOSE_NO_STATUS, 1006 CLOSE_ABNORMAL
+    // ignore 1000 CLOSE_NORMAL
     // ignore 1007...3999
-    // handle 1002 CLOSE_PROTOCOL_ERROR, 1003 CLOSE_UNSUPPORTED,
-    //        1004 CLOSE_TOO_LARGE
-    if (closeEvent.code >= 1002 && closeEvent.code <= 1004) {
+    // handle 1001 CLOSE_GOING_AWAY, 1002 CLOSE_PROTOCOL_ERROR, 1003 CLOSE_UNSUPPORTED,
+    //        1005 CLOSE_NO_STATUS, 1006 CLOSE_ABNORMAL, 1004 CLOSE_TOO_LARGE
+    if (closeEvent.code >= 1001 && closeEvent.code <= 1006) {
       return "backoff";
     } else {
       return null;
