@@ -839,6 +839,7 @@ module.exports =
 	    activity_timeout: 120000,
 	    pong_timeout: 30000,
 	    unavailable_timeout: 10000,
+	    transport_lives: 2,
 	    cdn_http: 'http://js.pusher.com',
 	    cdn_https: 'https://js.pusher.com',
 	    dependency_suffix: ''
@@ -1232,12 +1233,12 @@ module.exports =
 	                timeoutLimit: 60000
 	            }],
 	        [":def", "ws_manager", [":transport_manager", {
-	                    lives: 2,
+	                    lives: config.transport_lives,
 	                    minPingDelay: 10000,
 	                    maxPingDelay: config.activity_timeout
 	                }]],
 	        [":def", "streaming_manager", [":transport_manager", {
-	                    lives: 2,
+	                    lives: config.transport_lives,
 	                    minPingDelay: 10000,
 	                    maxPingDelay: config.activity_timeout
 	                }]],
@@ -2071,6 +2072,7 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var pusher_1 = __webpack_require__(1);
 	var factory_1 = __webpack_require__(35);
 	var TransportManager = (function () {
 	    function TransportManager(options) {
@@ -2088,6 +2090,7 @@ module.exports =
 	    };
 	    TransportManager.prototype.reportDeath = function () {
 	        this.livesLeft -= 1;
+	        pusher_1["default"].log("death reported, lives left: " + this.livesLeft);
 	    };
 	    return TransportManager;
 	}());
@@ -3681,7 +3684,8 @@ module.exports =
 	        authTransport: defaults_1["default"].channel_auth_transport,
 	        activity_timeout: defaults_1["default"].activity_timeout,
 	        pong_timeout: defaults_1["default"].pong_timeout,
-	        unavailable_timeout: defaults_1["default"].unavailable_timeout
+	        unavailable_timeout: defaults_1["default"].unavailable_timeout,
+	        transport_lives: defaults_1["default"].transport_lives
 	    };
 	};
 	exports.getClusterConfig = function (clusterName) {
