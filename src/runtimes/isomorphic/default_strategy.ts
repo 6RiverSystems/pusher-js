@@ -35,12 +35,12 @@ var getDefaultStrategy = function(config) {
     }],
 
     [":def", "ws_manager", [":transport_manager", {
-      lives: 2,
+      lives: Infinity,
       minPingDelay: 10000,
       maxPingDelay: config.activity_timeout
     }]],
     [":def", "streaming_manager", [":transport_manager", {
-      lives: 2,
+      lives: Infinity,
       minPingDelay: 10000,
       maxPingDelay: config.activity_timeout
     }]],
