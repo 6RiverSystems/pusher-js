@@ -12,3 +12,5 @@ dist/*/lib/
 !/src/node_modules
 !spec/javascripts/node_modules
 .DS_Store
+.idea
+
