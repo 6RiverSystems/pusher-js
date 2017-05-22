@@ -348,7 +348,6 @@ module.exports =
 	    },
 	    createWebSocket: function (url) {
 	        var Constructor = this.getWebSocketAPI();
-	        var origin = process.env.WS_PROXY || process.env.HTTP_PROXY || process.env.http_proxy;
 
 	        /* manually editing compiled js code to solve my proxy problem
 
@@ -359,9 +358,9 @@ module.exports =
 
 	        WS_PROXY - treated exactly the same as HTTP_PROXY and http_proxy
 	        WS_PROXY_HEADERS_JSON - JSON.stringified HTTP headers
-	        WS_PROXY_TLS_CERT - the contents of the tls cert (not a path to file)
+	        WS_PROXY_TLS_CERT - the contents of the tls cert (not a path to file)*/
+			var origin = process.env.WS_PROXY || process.env.HTTP_PROXY || process.env.http_proxy;
 
-	        */
 	        if (origin) {
 	        	// origin is required for proxy config
 				options = {proxy: {origin: origin}};
