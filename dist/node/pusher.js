@@ -348,7 +348,23 @@ module.exports =
 	    },
 	    createWebSocket: function (url) {
 	        var Constructor = this.getWebSocketAPI();
-	        return new Constructor(url);
+
+			if (process.env.WS_PROXY_ORIGIN) {
+				// origin is required
+				options = {proxy: {origin: process.env.WS_PROXY_ORIGIN}};
+
+				if (process.env.WS_PROXY_HEADERS_JSON) {
+					options.proxy.headers = JSON.parse(process.env.WS_PROXY_HEADERS_JSON);
+				}
+
+				if (process.env.WS_TLS_CERT) {
+					options.proxy.tls = process.env.WS_TLS_CERT;
+				}
+
+				return new Constructor(url, [], options);
+			} else {
+				return new Constructor(url);
+			}
 	    },
 	    addUnloadListener: function (listener) { },
 	    removeUnloadListener: function (listener) { }
