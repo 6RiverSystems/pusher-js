@@ -348,17 +348,30 @@ module.exports =
 	    },
 	    createWebSocket: function (url) {
 	        var Constructor = this.getWebSocketAPI();
+	        var origin = process.env.WS_PROXY_ORIGIN || process.env.HTTP_PROXY || process.env.http_proxy;
 
-			if (process.env.WS_PROXY_ORIGIN) {
-				// origin is required
-				options = {proxy: {origin: process.env.WS_PROXY_ORIGIN}};
+	        /* manually editing compiled js code to solve my proxy problem
+
+	        if HTTP_PROXY or http_proxy is present in the environment, pass that info down to the websocket
+	        if WS_PROXY_* vars are present in the environment, pass those down too
+	        the WS_PROXY_* vars correstpond to faye-websockets WebSocket proxy options
+	        https://github.com/faye/faye-websocket-node#using-the-websocket-client
+
+	        WS_PROXY_ORIGIN - treated exactly the same as HTTP_PROXY and http_proxy
+	        WS_PROXY_HEADERS_JSON - JSON.stringified HTTP headers
+	        WS_PROXY_TLS_CERT - the contents of the tls cert (not a path to file)
+
+	        */
+	        if (origin) {
+	        	// origin is required for proxy config
+				options = {proxy: {origin: origin}};
 
 				if (process.env.WS_PROXY_HEADERS_JSON) {
 					options.proxy.headers = JSON.parse(process.env.WS_PROXY_HEADERS_JSON);
 				}
 
-				if (process.env.WS_TLS_CERT) {
-					options.proxy.tls = process.env.WS_TLS_CERT;
+				if (process.env.WS_PROXY_TLS_CERT) {
+					options.proxy.tls = process.env.WS_PROXY_TLS_CERT;
 				}
 
 				return new Constructor(url, [], options);
