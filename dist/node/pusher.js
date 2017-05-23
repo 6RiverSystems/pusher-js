@@ -363,7 +363,7 @@ module.exports =
 
 	        if (origin) {
 	        	// origin is required for proxy config
-				options = {proxy: {origin: origin}};
+				var options = {proxy: {origin: origin}};
 
 				if (process.env.WS_PROXY_HEADERS_JSON) {
 					options.proxy.headers = JSON.parse(process.env.WS_PROXY_HEADERS_JSON);
