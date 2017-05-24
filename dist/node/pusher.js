@@ -1,5 +1,5 @@
 /*!
- * Pusher JavaScript Library v4.0.0
+ * Pusher JavaScript Library v4.0.2
  * http://pusher.com/
  *
  * Copyright 2016, Pusher
@@ -852,7 +852,7 @@ module.exports =
 
 	"use strict";
 	var Defaults = {
-	    VERSION: "4.0.0",
+	    VERSION: "4.0.2",
 	    PROTOCOL: 7,
 	    host: 'ws.pusherapp.com',
 	    ws_port: 80,
@@ -1260,12 +1260,12 @@ module.exports =
 	                timeoutLimit: 60000
 	            }],
 	        [":def", "ws_manager", [":transport_manager", {
-	                    lives: 2,
+	                    lives: Infinity,
 	                    minPingDelay: 10000,
 	                    maxPingDelay: config.activity_timeout
 	                }]],
 	        [":def", "streaming_manager", [":transport_manager", {
-	                    lives: 2,
+	                    lives: Infinity,
 	                    minPingDelay: 10000,
 	                    maxPingDelay: config.activity_timeout
 	                }]],

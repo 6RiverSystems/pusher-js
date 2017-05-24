@@ -55,6 +55,6 @@
   },
   "dependencies": {
     "faye-websocket": "0.9.4",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "git+https://github.com/jbeuckm/node-XMLHttpRequest.git"
   }
 }
