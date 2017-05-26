@@ -345,7 +345,7 @@ module.exports =
 	    createXHR: function () {
 	        var Constructor = this.getXHRAPI();
 			if (process.env.HTTP_PROXY_HOST) {
-	        	return new Constructor({proxy: {host: process.env.HTTP_PROXY_HOST, port: process.env.HTTP_PROXY_PORT});
+	        	return new Constructor({proxy: {host: process.env.HTTP_PROXY_HOST, port: process.env.HTTP_PROXY_PORT}});
 			} else {
 	        	return new Constructor();
 			}
